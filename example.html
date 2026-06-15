@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>@copperdesign/gsheets — Example</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 50rem; margin: 2rem auto; padding: 0 1rem; color: #222; }
+    h1 { font-weight: 200; letter-spacing: -0.02em; }
+    .controls { margin-bottom: 2rem; padding: 1rem; background: #f5f5f5; border-radius: 0.5rem; }
+    .controls label { display: block; margin-bottom: 0.5rem; }
+    .controls input { width: 100%; padding: 0.4rem; font: inherit; }
+    article { border-top: 1px solid #ddd; padding: 1rem 0; }
+    article h3 { margin: 0 0 0.25rem; }
+    .consent-card { padding: 1rem; border: 1px solid #ccc; border-radius: 0.5rem; }
+    .consent-card button { padding: 0.5rem 1rem; cursor: pointer; }
+    .gsheets-error { color: #b00020; }
+  </style>
+</head>
+<body>
+
+  <h1>@copperdesign/gsheets</h1>
+  <p>Example page. Set a sheet ID and API key, then click load.</p>
+
+  <div class="controls">
+    <label>Sheet ID <input id="cfg-sheet"  placeholder="1t6WRNO0Swv844uWZKkqC3Ot-0r67CI9kzKs5lZ7gNzg"></label>
+    <label>API Key  <input id="cfg-key"    placeholder="AIza…"></label>
+    <label>Range    <input id="cfg-range"  value="A1:Z100"></label>
+    <button id="reload">Reload</button>
+  </div>
+
+  <!-- Row template -->
+  <template id="article">
+    <article>
+      <h3 data-column-name="titel"></h3>
+      <p  data-column-name="inhalt" data-html data-remove-empty></p>
+    </article>
+  </template>
+
+  <!-- State templates -->
+  <template id="article-cta">
+    <div class="consent-card">
+      <p>Beim Laden der Tabelle werden Daten an Google übertragen.</p>
+      <button data-gsheets-optin>Inhalt laden</button>
+    </div>
+  </template>
+
+  <template id="article-empty">
+    <p>Keine Einträge.</p>
+  </template>
+
+  <template id="article-loading">
+    <p aria-busy="true">Daten werden geladen…</p>
+  </template>
+
+  <template id="article-error">
+    <p class="gsheets-error">Fehler: <span data-column-name="message"></span></p>
+  </template>
+
+  <div class="articles"></div>
+
+  <script type="module">
+    import gSheets from './index.js';
+
+    // Trivial demo consent — localStorage flag, no real cookie banner.
+    const KEY = 'gsheets-demo-consent';
+    const consent = {
+      check:   () => localStorage.getItem(KEY) === '1',
+      request: async () => {
+        localStorage.setItem(KEY, '1');
+        document.dispatchEvent(new CustomEvent('consentchange'));
+      },
+      ctaTemplate: '#article-cta',
+    };
+
+    let teardown = null;
+    function rebuild() {
+      const sheetId = document.getElementById('cfg-sheet').value.trim();
+      const apiKey  = document.getElementById('cfg-key').value.trim();
+      const range   = document.getElementById('cfg-range').value.trim() || 'A1:Z100';
+      if (!sheetId || !apiKey) {
+        document.querySelector('.articles').textContent = 'Add a sheet ID and API key above.';
+        return;
+      }
+      if (teardown) teardown();
+      teardown = gSheets({
+        target:   '.articles',
+        template: '#article',
+        sheetId, apiKey, range,
+        loadingTemplate: '#article-loading',
+        emptyTemplate:   '#article-empty',
+        errorTemplate:   '#article-error',
+        consent,
+      });
+    }
+    document.getElementById('reload').addEventListener('click', rebuild);
+  </script>
+</body>
+</html>

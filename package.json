@@ -1,0 +1,39 @@
+{
+  "name": "@copperdesign/gsheets",
+  "version": "0.1.0",
+  "description": "Render a published Google Sheet through an HTML <template>. Zero dependencies, ESM only.",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "google-sheets",
+    "gsheets",
+    "sheets",
+    "template",
+    "data-binding",
+    "esm",
+    "no-dependencies"
+  ],
+  "author": "Christian Fillies <contact@christianfillies.com> (https://christianfillies.com)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/copperdesign/gSheets.git"
+  },
+  "homepage": "https://github.com/copperdesign/gSheets#readme",
+  "bugs": {
+    "url": "https://github.com/copperdesign/gSheets/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
