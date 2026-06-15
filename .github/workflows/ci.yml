@@ -38,6 +38,26 @@ jobs:
       - name: parse check (index.js)
         run: node --check index.js
 
+      - name: banner version matches package.json
+        run: |
+          # The /*! …vX.Y.Z … */ header on line 1 of index.js is the
+          # license notice that survives minification. Easy to forget
+          # to bump alongside package.json — catch the drift here.
+          node -e "
+            const fs = require('fs');
+            const pkg = require('./package.json').version;
+            const src = fs.readFileSync('index.js', 'utf8');
+            const m = src.match(/^\/\*!\s*gSheets\s+—\s+v(\d+\.\d+\.\d+)/);
+            if (!m) {
+              console.error('index.js banner not found or malformed (expected /*! gSheets — vX.Y.Z …)');
+              process.exit(1);
+            }
+            if (m[1] !== pkg) {
+              console.error('banner (' + m[1] + ') does not match package.json (' + pkg + ')');
+              process.exit(1);
+            }
+          "
+
       - name: package.json is valid JSON
         run: node -e "JSON.parse(require('fs').readFileSync('package.json','utf8'))"
 
