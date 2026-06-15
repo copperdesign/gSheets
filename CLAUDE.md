@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A single-file, zero-dependency browser ES module published as `@copperdesign/gsheets`. The entire module is `index.js` (~250 lines). There is no build step, no bundler, no transpile, no `npm install` (no deps, runtime or dev).
+A single-file, zero-dependency browser ES module published as `@copperdesign/gsheets`. The entire module is `index.js` (~320 lines). There is no build step, no bundler, no transpile, no `npm install` (no deps, runtime or dev).
 
 It's the modern successor to `jquery.gsheet.js` (2018, Märchenforum) and `gSheets.js` (Aktion Kinderparadies). The binding model is intentionally identical to [`@copperdesign/gcal`](https://github.com/copperdesign/gCal) — `data-column-name` here, `data-slot` there, otherwise the same `data-attr` / `data-html` / `data-remove-empty` rules. Treat that consistency as load-bearing: someone who knows one library should know the other.
 
@@ -32,6 +32,12 @@ The example reads a public demo sheet — you need a Google API key with the She
 4. **The consent CTA's button is wired before append.** The fragment we clone from the CTA template is what we listen on; if we append first and then look up the button, we still find it, but the cleanup function needs the same node reference both ways. Easier to do it in one pass.
 
 5. **`bindColumn()` mirrors gCal's `bindSlot()`.** When making changes to one, consider whether the other needs the same change — they're contract-twins. If a binding rule diverges between the two libs, document why prominently.
+
+6. **Empty-value handling sets `node.hidden = true`, and re-renders must reset it to `false`.** The same node lives across renders (templates are cloned but state-template swaps replace the whole subtree). A row that was empty last fetch and has a value now needs visibility restored — `bindColumn()` does that explicitly. Templates can also ship `hidden` on attr-bound nodes to suppress unbound flashes; the bind path clears that.
+
+7. **The error template renders through the same binding path as rows.** `renderError()` calls `renderTemplate(opts.errorTemplate, { message })`, so `data-column-name="message"` works (escaped), and `data-html` is a per-slot opt-in here too. This is the reason there's no separate error renderer — escaping consistency is the point.
+
+8. **Consent CTA trigger lookup is `[data-gsheets-optin]` first, then any `<button>`.** The convention matches how consent banners typically mark their primary action. Single-button CTAs work without the data-attr; multi-button CTAs must mark the opt-in explicitly.
 
 ## Conventions that matter here
 
