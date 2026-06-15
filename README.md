@@ -181,13 +181,19 @@ gSheets stays provider-agnostic — easy-cookie-consent is opt-in, not bundled.
 
 The error template renders through the same binding path as row templates — `data-column-name="message"` (escaped) or `data-html` (trusted) work as expected.
 
-## Getting the API key
+## Google Cloud setup
 
-1. [Google Cloud Console](https://console.cloud.google.com/) → enable the **Google Sheets API**.
-2. Create an API key, restrict it by HTTP referrer to your domains.
-3. In your sheet: **File → Share → Publish to the web** so the API can read it without OAuth.
+Three things have to be in place before the library can fetch anything:
 
-The API key ships to the browser. Restrict it by referrer to the domains you control — otherwise anyone can use your quota.
+1. **Publish the sheet.** Open the sheet → **File → Share → Publish to the web** → publish the whole document (or a single tab). This is what lets the API key read the sheet without OAuth. The **Sheet ID** is the long string in the sheet's URL between `/d/` and `/edit`.
+
+2. **Create an API key.** [Google Cloud Console](https://console.cloud.google.com/) → *APIs & Services* → *Library* → enable **Google Sheets API**. Then *Credentials* → *Create credentials → API key*.
+
+3. **Restrict the key.** It ships in your page source — anyone viewing your site can read it. Two restrictions stop it being reused elsewhere:
+   - **Application restrictions → HTTP referrers (websites)** → add every host the embed runs on. Google requires the `*` wildcard form: `https://example.com/*`, `https://www.example.com/*`, plus any staging or preview domain (on Weebly, also `https://*.weebly.com/*`).
+   - **API restrictions → Restrict key** → select **Google Sheets API** only.
+
+Without the restrictions the key still works, but any visitor who copies it can use your project's quota from anywhere.
 
 ## Using it in a Weebly theme
 
@@ -217,7 +223,7 @@ Weebly doesn't have a build step or package manager, but the module is a single 
 Notes:
 
 - **Pin the version** (`@0.1.0` above) so a future release doesn't change behavior on a site you don't actively maintain. [jsDelivr](https://www.jsdelivr.com/package/npm/@copperdesign/gsheets) works equivalently — `https://cdn.jsdelivr.net/npm/@copperdesign/gsheets@0.1.1/+esm`.
-- **Restrict the API key by HTTP referrer** to your `*.weebly.com` subdomain and any custom domain. The key is visible in page source — referrer restriction is what keeps your quota yours.
+- **Before you paste this live**, complete the steps in [Google Cloud setup](#google-cloud-setup) above — in particular, add `https://*.weebly.com/*` and any custom domain under *HTTP referrers*, since the key ships in page source.
 - **Edits to the sheet appear on next page load.** No publish step on the Weebly side; the data is pulled live.
 - **If your theme has a cookie banner**, drop in the consent adapter (see [Consent flow](#consent-flow)) and the embed will gate itself behind opt-in automatically.
 
