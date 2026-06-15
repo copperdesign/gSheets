@@ -189,18 +189,45 @@ The error template renders through the same binding path as row templates — `d
 
 The API key ships to the browser. Restrict it by referrer to the domains you control — otherwise anyone can use your quota.
 
+## Using it in a Weebly theme
+
+Weebly doesn't have a build step or package manager, but the module is a single ES module and loads fine from a CDN. Two pieces, both in an **Embed Code** element on the page:
+
+```html
+<template id="article">
+  <article>
+    <h3 data-column-name="titel"></h3>
+    <p  data-column-name="inhalt" data-html></p>
+  </article>
+</template>
+<div class="articles"></div>
+
+<script type="module">
+  import gSheets from 'https://unpkg.com/@copperdesign/gsheets@0.1.0';
+
+  gSheets({
+    target:   '.articles',
+    template: '#article',
+    sheetId:  'YOUR_SHEET_ID',
+    apiKey:   'YOUR_GOOGLE_API_KEY',
+  });
+</script>
+```
+
+Notes:
+
+- **Pin the version** (`@0.1.0` above) so a future release doesn't change behavior on a site you don't actively maintain. [jsDelivr](https://www.jsdelivr.com/package/npm/@copperdesign/gsheets) works equivalently — `https://cdn.jsdelivr.net/npm/@copperdesign/gsheets@0.1.0/+esm`.
+- **Restrict the API key by HTTP referrer** to your `*.weebly.com` subdomain and any custom domain. The key is visible in page source — referrer restriction is what keeps your quota yours.
+- **Edits to the sheet appear on next page load.** No publish step on the Weebly side; the data is pulled live.
+- **If your theme has a cookie banner**, drop in the consent adapter (see [Consent flow](#consent-flow)) and the embed will gate itself behind opt-in automatically.
+
 ## Browser support
 
 Modern evergreens. Requires native `fetch`, `<template>`, `URLSearchParams`. No build step required.
 
 ## Provenance
 
-This module is the modern successor to two earlier scripts:
-
-- `jquery.gsheet.js` (2018, jQuery, used on the Märchenforum site).
-- `gSheets.js` shipped with the Aktion Kinderparadies site — same idea, jQuery removed, consent gate inlined.
-
-This rewrite drops jQuery, makes the binding rules consistent with [`@copperdesign/gcal`](https://github.com/copperdesign/gCal), defaults to safe `textContent` rendering, and makes consent gating a contract rather than a built-in.
+This module is the modern successor to a 2018 jQuery plugin (`jquery.gsheet.js`) and a later jQuery-free rewrite that inlined a consent gate. This release drops jQuery, makes the binding rules consistent with [`@copperdesign/gcal`](https://github.com/copperdesign/gCal), defaults to safe `textContent` rendering, and makes consent gating a contract rather than a built-in.
 
 ## License
 

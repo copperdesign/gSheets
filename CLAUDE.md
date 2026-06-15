@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A single-file, zero-dependency browser ES module published as `@copperdesign/gsheets`. The entire module is `index.js` (~320 lines). There is no build step, no bundler, no transpile, no `npm install` (no deps, runtime or dev).
 
-It's the modern successor to `jquery.gsheet.js` (2018, Märchenforum) and `gSheets.js` (Aktion Kinderparadies). The binding model is intentionally identical to [`@copperdesign/gcal`](https://github.com/copperdesign/gCal) — `data-column-name` here, `data-slot` there, otherwise the same `data-attr` / `data-html` / `data-remove-empty` rules. Treat that consistency as load-bearing: someone who knows one library should know the other.
+It's the modern successor to an earlier jQuery plugin (2018) and a later jQuery-free rewrite that inlined a consent gate. The binding model is intentionally identical to [`@copperdesign/gcal`](https://github.com/copperdesign/gCal) — `data-column-name` here, `data-slot` there, otherwise the same `data-attr` / `data-html` / `data-remove-empty` rules. Treat that consistency as load-bearing: someone who knows one library should know the other.
 
 ## Running and testing
 
