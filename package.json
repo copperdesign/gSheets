@@ -1,6 +1,6 @@
 {
   "name": "@copperdesign/gsheets",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Render a published Google Sheet through an HTML <template>. Zero dependencies, ESM only.",
   "type": "module",
   "main": "index.js",
