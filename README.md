@@ -135,13 +135,19 @@ When consent is granted (synchronously or by `request()` resolving), the library
 
 ### With `@copperdesign/easy-cookie-consent`
 
-The blessed pairing — a zero-dependency consent gate built to the same shape. The adapter is three lines:
+The recommended pairing — a zero-dependency, click-to-load consent gate built to the same shape as gSheets. The adapter is three lines:
 
 ```js
 import gSheets from '@copperdesign/gsheets';
 import easyCookieConsent from '@copperdesign/easy-cookie-consent';
 
 const ecc = easyCookieConsent({
+  // easy-cookie-consent shows a global modal on load by default.
+  // If gSheets' CTA template is your only consent UI, set this to false.
+  // Leave it true (default) to pair the global banner with the per-embed CTA.
+  showModal: false,
+  // Re-render gSheets when consent flips elsewhere on the page
+  // (global modal, revoke link, …).
   onConsent: () => document.dispatchEvent(new CustomEvent('consentchange')),
 });
 
@@ -198,4 +204,6 @@ This rewrite drops jQuery, makes the binding rules consistent with [`@copperdesi
 
 ## License
 
-MIT © Christian Fillies
+MIT — see [LICENSE](./LICENSE).
+
+Created by [Christian Fillies](https://www.christianfillies.com).
