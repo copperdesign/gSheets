@@ -203,7 +203,7 @@ Weebly doesn't have a build step or package manager, but the module is a single 
 <div class="articles"></div>
 
 <script type="module">
-  import gSheets from 'https://unpkg.com/@copperdesign/gsheets@0.1.0';
+  import gSheets from 'https://unpkg.com/@copperdesign/gsheets@0.1.1';
 
   gSheets({
     target:   '.articles',
@@ -216,7 +216,7 @@ Weebly doesn't have a build step or package manager, but the module is a single 
 
 Notes:
 
-- **Pin the version** (`@0.1.0` above) so a future release doesn't change behavior on a site you don't actively maintain. [jsDelivr](https://www.jsdelivr.com/package/npm/@copperdesign/gsheets) works equivalently — `https://cdn.jsdelivr.net/npm/@copperdesign/gsheets@0.1.0/+esm`.
+- **Pin the version** (`@0.1.0` above) so a future release doesn't change behavior on a site you don't actively maintain. [jsDelivr](https://www.jsdelivr.com/package/npm/@copperdesign/gsheets) works equivalently — `https://cdn.jsdelivr.net/npm/@copperdesign/gsheets@0.1.1/+esm`.
 - **Restrict the API key by HTTP referrer** to your `*.weebly.com` subdomain and any custom domain. The key is visible in page source — referrer restriction is what keeps your quota yours.
 - **Edits to the sheet appear on next page load.** No publish step on the Weebly side; the data is pulled live.
 - **If your theme has a cookie banner**, drop in the consent adapter (see [Consent flow](#consent-flow)) and the embed will gate itself behind opt-in automatically.
